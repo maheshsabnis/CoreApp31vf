@@ -62,3 +62,4 @@ Day 2, Assignment 1
 		- Exception Type
 		- Exception Message
 		- DateTime
+		- StackTrace
