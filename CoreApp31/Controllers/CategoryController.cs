@@ -34,21 +34,27 @@ namespace CoreApp31.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            try
-            {
+            //try
+            //{
                 // validate the model
                 if (ModelState.IsValid)
                 {
+                    if (category.BasePrice < 0) throw new Exception("Base Price cannot be -ve");
                     category = await catService.CreateAsync(category);
                     return RedirectToAction("Index");
                 }
                 return View(category); // stey on Same View with validation error messages
-            }
-            catch (Exception ex)
-            {
-                // redirect to error view
-                return View("Error");
-            }
+           // }
+            //catch (Exception ex)
+            //{
+            //    // redirect to error view
+            //    return View("Error", new ErrorViewModel()
+            //    {
+            //        ControllerName = this.RouteData.Values["controller"].ToString(),
+            //        ActionName = this.RouteData.Values["action"].ToString(),
+            //        Exception = ex
+            //    }) ;
+            //}
         }
 
         public async Task<IActionResult> Edit(int id)

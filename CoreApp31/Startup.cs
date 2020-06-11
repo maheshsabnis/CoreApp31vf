@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoreApp31.CustomFilters;
 using CoreApp31.Models;
 using CoreApp31.Services;
 using Microsoft.AspNetCore.Builder;
@@ -49,8 +50,13 @@ namespace CoreApp31
 
             // register the Custom Repository Services in DI Container
             services.AddScoped<IService<Category, int>, CategoryService>();
-
-            services.AddControllersWithViews();
+            services.AddScoped<IService<Product, int>, ProductService>();
+            services.AddControllersWithViews(options => {
+                // registering the custom filter in services
+                // this will be executed when the exception occures in
+                // any MVC controller
+                options.Filters.Add(typeof(MyExceptionFilterAttribute));
+            });
 
            
         }

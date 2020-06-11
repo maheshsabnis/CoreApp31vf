@@ -28,25 +28,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryRowId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BasePrice)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.CategoryRowId}) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CategoryRowId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryRowId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BasePrice)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CategoryRowId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.CategoryRowId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<hr />
+
+<table generate-rows="@Model.Count()" source-model="@Model"></table>
+
+<address>
+    One Microsoft Way<br />
+    Redmond, WA 98052<br />
+    <abbr title="Phone">P:</abbr>
+    425.555.0100
+</address>
+
+<address>
+    <strong>Support:</strong><email>Support</email><br />
+    <strong>Marketing:</strong><email>Marketing</email>
+</address>

@@ -39,9 +39,23 @@ namespace CoreApp31.Models
         [StringLength(400)]
         public string Description { get; set; }
         [Required(ErrorMessage = "Price is must")]
+        [NumericValidator(ErrorMessage ="Price must be positive")]
         public int Price { get; set; }
         [ForeignKey("CategoryRowId")]
         public int CategoryRowId { get; set; } // expected foreign key
         public Category Category { get; set; } // expcted referencial integrity
+    }
+
+    public class NumericValidatorAttribute : ValidationAttribute
+    {
+       
+        public override bool IsValid(object value)
+        { 
+            if (Convert.ToInt32(value) < 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

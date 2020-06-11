@@ -34,3 +34,31 @@ Razor Page Templates
 	- The View with Instance of Model class as TModel containing Data to be delete
 5. Empty
 	- The Free Hand Design of the View
+
+==============================================================================================
+ViewBag
+1. The Dynamic object of the Controller class that will be scoped to method (IMP) and will 
+be used to pass data from the Action Scope to the View return from the Action.
+2. If a view is using ViewBag object, then all action methods returning the same view must 
+pass ViewBag to the view.
+==============================================================================================
+Validate the Data against the Logic using 'Error Handling'
+1. Use the Try-Catch Block in each action method of Controller.
+2. In case of ASP.NET Core MVC Controllers use Filters for Error Handling and Inject them 
+in services
+	- IActionFilter Contract for registerting Action Filters in HTTP Processing of MVC Controllers
+	- ExceptionFilterAttribute Class
+	- ResultFilterAttribute class
+		- USed by IActionResult for Returing Actionresult (View/Json/ObjectResults)
+3. Global Exception Handler then use Middlewares (MVC + WEB + WebForms)
+================================================================================================
+Day 2, Assignment 1
+1. Edit view of Product should show the CategoryName selected in dropdown
+2. Modify the MyExceptionFilter Class to Log Exceptions in Database. 
+(Note: Use DI for DbContext in Constructor of MyExceptoinFilter class)
+	- Log in Following Schema
+		- ControllerName
+		- Action Name
+		- Exception Type
+		- Exception Message
+		- DateTime
