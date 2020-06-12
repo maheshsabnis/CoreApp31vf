@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreApp31.Models;
 using CoreApp31.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreApp31.Controllers
 {
+   // [Authorize]
     public class CategoryController : Controller
     {
 
@@ -20,12 +22,13 @@ namespace CoreApp31.Controllers
         {
             this.catService = catService;
         }
+        [Authorize(Policy = "readpolicy")]
         public async Task<IActionResult> Index()
         {
             var cats = await catService.GetAsync();
             return View(cats);
         }
-
+        [Authorize(Policy = "writepolicy")]
         public IActionResult Create()
         {
             return View(new Category());
@@ -56,7 +59,7 @@ namespace CoreApp31.Controllers
             //    }) ;
             //}
         }
-
+        [Authorize(Policy = "writepolicy")]
         public async Task<IActionResult> Edit(int id)
         {
             var cat = await catService.GetAsync(id);

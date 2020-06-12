@@ -52,17 +52,5 @@
     </tbody>
 </table>
 <hr />
-
-<table generate-rows="@Model.Count()" source-model="@Model"></table>
-
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong><email>Support</email><br />
-    <strong>Marketing:</strong><email>Marketing</email>
-</address>
+ <h2>Using the Custom Tag Helper</h2> 
+<table generate-tablerows="@Model.Count()" src-model="@Model"></table>

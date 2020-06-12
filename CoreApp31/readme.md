@@ -63,3 +63,29 @@ Day 2, Assignment 1
 		- Exception Message
 		- DateTime
 		- StackTrace
+
+
+
+============================================================================================
+Tag Helper must bde derived from the TagHelper class and must target to HTML Element and must override 
+the Process / ProcessAsync method to render the HTML
+1. Register the assembly containing the tag helper in the _ViewImports.cshtml using 
+@addTagHelper *,<AssemblyName for TagHelper>
+* --> The default Tag Helpers in default assembly of ASP.NET Core
+<AssemblyName> --> The Assembly tat contains the Custom Tag Helper Created 
+
+===============================================================================================
+
+Identity Classes
+1. UserManager<IdentityUser>
+	- Used to perform CRUD operations for the User against the EF Core store
+2. RoleManager<IdentityRole>
+	- Used to perform CRUD operations for Roles
+3. SignInManager
+	- Manage the User SignIn based on Password	
+====================================================================================
+Day 3:
+Create a Default Administrator User for Administrator role for the Application.
+Make sure that Application Roles can be created by Administrator Role 
+Users can be created Anonymously for the application
+Only Adminsutrator can assign Roles to User and then only user can use the application

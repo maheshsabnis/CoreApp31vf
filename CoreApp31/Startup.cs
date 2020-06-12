@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreApp31.CustomFilters;
+using CoreApp31.Data;
 using CoreApp31.Models;
 using CoreApp31.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,10 +44,46 @@ namespace CoreApp31
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+
             // register the DbContext in DI Container
             services.AddDbContext<VodafoneDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("VodafoneAppConnection"));
             });
+
+           // the security infra services
+                services.AddDbContext<VodafoneWebAuthDbContext>(options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("VodafoneWebAuthDbContextConnection")));
+
+            //  Configure the DataStore to verify the Credentials
+            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //.AddEntityFrameworkStores<VodafoneWebAuthDbContext>();
+
+            
+            // used to resolve the UserManager<IdentityUser> and
+            // RoleManager<IdentityRole>
+            services.AddIdentity<IdentityUser,IdentityRole>(
+                /*options => options.SignIn.RequireConfirmedAccount = true*/
+                )
+               .AddEntityFrameworkStores<VodafoneWebAuthDbContext>();
+            
+            // the user authentication must be varified
+            // connect to store and get the User Principal aka claim
+            services.AddAuthentication();
+            services.AddAuthorization(
+                  options => {
+                      options.AddPolicy(
+                             "readpolicy", 
+                             policy => policy.RequireRole("Manager", "Clerk", "Operator") 
+                          );
+                      options.AddPolicy(
+                             "writepolicy",
+                             policy => policy.RequireRole("Manager", "Clerk")
+                          );
+
+                  }
+                ); // Role Based Security
+            // ends here
 
 
             // register the Custom Repository Services in DI Container
@@ -57,8 +95,10 @@ namespace CoreApp31
                 // any MVC controller
                 options.Filters.Add(typeof(MyExceptionFilterAttribute));
             });
-
-           
+            // for ASP.NET Core Razor Pages aka Web Forms
+            // It must be used to accept and process request for RAzor Veiw not from
+            // ASP.NET Core MVC
+           services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +113,7 @@ namespace CoreApp31
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage(); // developer exception
+                //app.UseDatabaseErrorPage();
             }
             else
             {
@@ -84,7 +125,7 @@ namespace CoreApp31
             app.UseStaticFiles(); // used to read all static files from wwwroot folder i.e. all js/css/image files
 
             app.UseRouting(); // Routing, loads and eveluate Route expressions for MVC and WEB API 
-
+            app.UseAuthentication(); // Middleware for User Based Request Validation
             app.UseAuthorization(); // User and Role Management
 
             // the HTTP Endpoint on ehich the ASP.NET Core app is available in dotnet processing
@@ -94,6 +135,9 @@ namespace CoreApp31
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                // accept the request for .cshtml pages
+                // under the Http Context
+                endpoints.MapRazorPages();
             });
         }
     }
