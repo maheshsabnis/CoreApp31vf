@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreApp31.CustomFilters;
+using CoreApp31.CustomMiddlewares;
 using CoreApp31.Data;
 using CoreApp31.Models;
 using CoreApp31.Services;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Microsoft.OpenApi.Models;
 namespace CoreApp31
 {
     public class Startup
@@ -86,6 +88,23 @@ namespace CoreApp31
             // ends here
 
 
+            // configure the CORS Policies
+            services.AddCors(policy => {
+                policy.AddPolicy("corspolicy", settings =>
+                {
+                    settings.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+            // ends here
+
+            // configure service for Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ASP.NET Core API", Version = "v1" });
+            });
+            // ends here
+
+
             // register the Custom Repository Services in DI Container
             services.AddScoped<IService<Category, int>, CategoryService>();
             services.AddScoped<IService<Product, int>, ProductService>();
@@ -93,12 +112,18 @@ namespace CoreApp31
                 // registering the custom filter in services
                 // this will be executed when the exception occures in
                 // any MVC controller
-                options.Filters.Add(typeof(MyExceptionFilterAttribute));
+              //  options.Filters.Add(typeof(MyExceptionFilterAttribute));
+                
             });
             // for ASP.NET Core Razor Pages aka Web Forms
             // It must be used to accept and process request for RAzor Veiw not from
             // ASP.NET Core MVC
            services.AddRazorPages();
+            // for accepting requests for API Controllers
+            services.AddControllers(
+                ).AddJsonOptions(
+                  options => options.JsonSerializerOptions.PropertyNamingPolicy = null
+                ); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,9 +149,28 @@ namespace CoreApp31
             app.UseHttpsRedirection();
             app.UseStaticFiles(); // used to read all static files from wwwroot folder i.e. all js/css/image files
 
+            // configure swagger middleware with endpoints
+
+            app.UseSwagger();
+
+            // provide / respond the HTML UI
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASP.NET Core API Documentation");
+            });
+
+            // configure the CORS Middleware
+            app.UseCors("corspolicy");
             app.UseRouting(); // Routing, loads and eveluate Route expressions for MVC and WEB API 
             app.UseAuthentication(); // Middleware for User Based Request Validation
             app.UseAuthorization(); // User and Role Management
+
+            // register the custome middleware
+            app.UseCustomExcpetion();
+
+            // ends here
+
+
 
             // the HTTP Endpoint on ehich the ASP.NET Core app is available in dotnet processing
             app.UseEndpoints(endpoints =>

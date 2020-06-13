@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreApp31.Models;
 using CoreApp31.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace CoreApp31.Controllers
 {
@@ -17,6 +19,7 @@ namespace CoreApp31.Controllers
     /// 2. Security Management
     /// 3. Role and Policies
     /// </summary>
+    /// 
     public class ProductController : Controller
     {
 
@@ -65,6 +68,41 @@ namespace CoreApp31.Controllers
             }
         }
 
+
+       [HttpPost]
+        public  JsonResult CreateJSON(Product Product)
+            {
+            try
+            {
+                MemoryStream stream = new MemoryStream();
+                Request.Body.CopyToAsync(stream);
+                stream.Position = 0;
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string requestBody = reader.ReadToEndAsync().Result;
+                    if (requestBody.Length > 0)
+                    {
+                        var obj = JsonConvert.DeserializeObject<Product>(requestBody);
+                         
+                        }
+                }
+
+
+                // validate the model
+                if (ModelState.IsValid)
+                {
+                    Product =  prdService.CreateAsync(Product).Result;
+                    return Json(Product);
+                }
+                ViewBag.CategoryRowId = new SelectList( catService.GetAsync().Result, "CategoryRowId", "CategoryName");
+                return Json(Product); // stey on Same View with validation error messages
+            }
+            catch (Exception ex)
+            {
+                // redirect to error view
+                return Json("Errror");
+            }
+        }
         public async Task<IActionResult> Edit(int id)
         {
             var prd = await prdService.GetAsync(id);

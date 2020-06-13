@@ -14,43 +14,45 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*<div class="form-group">
-                <label asp-for="ProductRowId" class="control-label"></label>
-                <input asp-for="ProductRowId" class="form-control" />
-                <span asp-validation-for="ProductRowId" class="text-danger"></span>
-            </div>*@
+                    <label asp-for="ProductRowId" class="control-label"></label>
+                    <input asp-for="ProductRowId" class="form-control" />
+                    <span asp-validation-for="ProductRowId" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <input asp-for="ProductId" class="form-control" />
+                <label asp-for="ProductId"  class="control-label"></label>
+                <input asp-for="ProductId" id="ProductId" class="form-control" />
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
+                <input asp-for="ProductName" id="ProductName" class="form-control" />
                 <span asp-validation-for="ProductName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Manufacturer" class="control-label"></label>
-                <input asp-for="Manufacturer" class="form-control" />
+                <input asp-for="Manufacturer" id="Manufacturer" class="form-control" />
                 <span asp-validation-for="Manufacturer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" id="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" id="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryRowId" class="control-label"></label>
                 @*<input asp-for="CategoryRowId" class="form-control" />*@
-                <select asp-for="CategoryRowId" asp-items="@Categories" class="form-control"></select>
+                <select asp-for="CategoryRowId" id="CategoryRowId" asp-items="@Categories" class="form-control"></select>
                 <span asp-validation-for="CategoryRowId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <hr />
+                <input type="button" id="btn" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -59,7 +61,43 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    alert('ddddd');
+    $(document).ready(function () {
+        alert('dddrrr');
+        $("#btn").on('click', function () {
+            var Product = {
+                "ProductId": $("#ProductId").val(),
+                "ProductName": $("#ProductName").val(),
+                "Manufacturer": $("#Manufacturer").val(),
+                "Description": $("#Description").val(),
+                "Price": $("#Price").val(),
+                "CategoryRowId": $("#CategoryRowId").val()
+            };
+            alert('Product ' + JSON.stringify(Product))
+            alert('URL ' + '@Url.Action("Create","Product")')
+            $.ajax({
+                url: 'https://localhost:44326/Product/CreateJSON',
+                type: 'POST',
+                data: JSON.stringify(Product),
+                //headers: {
+                //    RequestVerificationToken:
+                //        $('input:hidden[name="__RequestVerificationToken"]').val()
+                //},
+                contentType: 'applicatoin/json;charset=utf-8',
+                dataType: 'json',
+            }).done(function (resp) {
+                alert('Success ' + JSON.stringify(resp));
+            }).fail(function (error) {
+                alert('Error ' + JSON.stringify(error));
 
+            });
+        });
+    })
+
+
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

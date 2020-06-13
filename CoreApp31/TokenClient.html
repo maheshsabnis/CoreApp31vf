@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="Scripts/jquery-3.5.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var newUser = { Email: "myuser2@msit.com", Password: "P@ssw0rd_", ConfirmPassword: "P@ssw0rd_" }
+            $("#btnRegister").on('click', function () {
+                $.ajax({
+                    url: 'http://localhost:5000/api/Auth/Register',
+                    type: 'POST',
+                    data: JSON.stringify(newUser),
+                    contentType: "application/json;utf-8",
+                    dataType: 'json'
+                }).done(function (resp) {
+                    alert('Response Succes ' + JSON.stringify(resp));
+                }).fail(function (error) {
+                    alert('Response Error ' + JSON.stringify(error));
+                });
+            });
+
+            $("#btnLogin").on('click', function () {
+                var loginUser = { UserName: "myuser2@msit.com", Password: "P@ssw0rd_" };
+                $.ajax({
+                    url: 'http://localhost:5000/api/Auth/Login',
+                    type: 'POST',
+                    data: JSON.stringify(loginUser),
+                    contentType: 'application/json;utf-8',
+                    dataType: 'json'
+                }).done(function (resp) {
+                    alert('Response Succes ' + JSON.stringify(resp));
+                    sessionStorage.setItem('token',resp.message);
+                }).fail(function (error) {
+                    alert('Response Error ' + JSON.stringify(error));
+                });
+            });
+
+            $("#btnGet").on('click', function () {
+                var token = sessionStorage.getItem('token');
+                $.ajax({
+                    url: 'http://localhost:5000/api/Products',
+                    type: 'GET',
+                    headers: {
+                        'AUTHORIZATION': 'Bearer ' + token
+                    }
+                }).done(function (resp) {
+                    alert('Response Succes ' + JSON.stringify(resp));
+                }).fail(function (error) {
+                    alert('Response Error ' + JSON.stringify(error));
+                });
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+    <input type="button" value="Register" id="btnRegister" />
+    <hr />
+    <input type="button" value="Login" id="btnLogin" />
+
+    <hr />
+    <input type="button" value="Get Products" id="btnGet" />
+
+</body>
+</html>

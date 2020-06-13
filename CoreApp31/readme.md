@@ -89,3 +89,33 @@ Create a Default Administrator User for Administrator role for the Application.
 Make sure that Application Roles can be created by Administrator Role 
 Users can be created Anonymously for the application
 Only Adminsutrator can assign Roles to User and then only user can use the application
+====================================================================================
+Day 4
+ApiController
+- Class that is used for Http Request Mapping with
+	- The Http Method (GET/POST/PUT/DELETE)
+	- Maping the Request Body of POST/PUT request with JSON Data to CLR Object
+- Model Binders for Parameter Binding to Action Methods of API
+	- FromBody
+	- FromQuery
+	- FromRoute
+	- FromForm
+
+=====================================================================================
+Swagger
+- An Engine that is used to read and publish REST API Documentation for API Subscribers
+- JSON Documentation
+- Default Endpoint on which the documentation is published 
+
+Day 4 Assignment 1
+Modify the Middleware to Perform Following
+- Log the exception with Exception Type, Detials, in the Server in Database
+- It should Hide the exception Details from the Response and should send the Custom Error 
+message and code to the client
+
+Assignmen2 
+1. Modify the tokne to store User and Role in the Claim
+2. Define the Role Based Policies to Access Action methods from WEB APIs
+	- The Product can be created by Manager/Clerk
+	- The Product can be read by all roles
+	- Only Manager can delete the Product
