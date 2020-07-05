@@ -15,21 +15,22 @@ namespace XUnitTestProjectSample
     public class CategoryControllerTest
     {
         [Fact]
-        public void Index_ReturnsAViewResult_WithAListOfCategories()
+        public void Index_ReturnsViewResult_WithAListOfCategories()
         {
             // Arrange
             var mockRepo = new Mock<IService<Category, int>>();
-
+            // define the setup on the mocked type
             mockRepo.Setup(repo => repo.GetAsync()).ReturnsAsync(GetTestCategories());
-           // resp.Returns(GetTestCategories);
             var controller = new CategoryController(mockRepo.Object);
             // Act
+            // call the Index() method from the controller
             var result = controller.Index().Result;
             //Asert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<List<Category>>(
                 viewResult.ViewData.Model
                 );
+            // Assert the model count
             Assert.Equal(2, model.Count());
         }
 
